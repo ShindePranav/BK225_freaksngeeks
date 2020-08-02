@@ -1,0 +1,124 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+            <div class="btn-group mr-2" role="group" aria-label="First group">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#home"><button type="button"
+                                class="btn btn-primary">Home</button></a></li>
+                    <li><a data-toggle="tab" href="#menu1"><button type="button" class="btn btn-secondary">Display All
+                                Tenders</button></a></li>
+                    <li><a data-toggle="tab" href="#menu2"><button type="button" class="btn btn-secondary">Pending Tenders</button></a></li>
+                    <li><a data-toggle="tab" href="#menu3"><button type="button" class="btn btn-secondary">View All Bidders</button></a></li>
+                </ul>
+                <button type="button" class="btn btn-danger">Logout</button>
+            </div>
+        </div>
+        <div class="container">
+            <div class="tab-content">
+                <!-- Id Home Tab -->
+                <div id="home" class="tab-pane fade in active">
+
+                </div>
+                <!-- ID Menu1 Display All Tenders -->
+                <div id="menu1" class="tab-pane fade">
+                    <div class="row" id="menu">
+                        <div class="clo-md-4">
+                            <div class="card" id="menu1">
+                                <div class="card-header card-header-danger">
+                                    <center>All tenders</center>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table">
+                                        <thead class="thead-light">
+                                            <th scope="col">Tender Title</th>
+                                            <th scope="col">Reference No</th>
+                                            <th scope="col">itemType</th>
+                                            <th scope="col">bidOpeningDate</th>
+                                            <th scope="col">Closing Date</th>
+                                            <th scope="col">Tender Status</th>
+                                            <!-- <th scope="col">Details</th> -->
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let x of tenders">
+                                                <td>{{x.tenderTitle}}</td>
+                                                <td>{{x.referenceNo}}</td>
+                                                <td>{{x.itemType}}</td>
+                                                <td>{{x.bidOpeningDate}}</td>
+                                                <td>{{x.closingDate}}</td>
+                                                <td>{{x.tenderStatus}}</td>
+                                                <!-- <td><a data-toggle="tab" href="#viewDetails" ><button mat-button (click)="more(x.tenderId)">more</button></a></td> -->
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="menu2" class="tab-pane fade in active">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card" >
+                                <div class="card-body">
+                                    <table align="center" class="table table-bordered"> 
+                                        <tr scope="col">
+                                            <td><B>Tender Id</B></td>
+                                            <td><B>Active Bid</B></td>
+                                            <td><B>Tender Title</B></td>
+                                            <td><B>Closing Date</B></td>
+                                            <td><B>BidOpening Date</B></td>
+                                            <td><B>Tender Status</B></td>
+                                            <td><B>Check Bids</B></td>
+                                        </tr>
+                                        <tr scope="col" *ngFor="let x of activetendersData">
+                                            <td>{{x.tenderId}}</td>
+                                            <td>{{x.activeBid}}</td>
+                                            <td>{{x.tenderTitle}}</td>
+                                            <td>{{x.closingDate}}</td>
+                                            <td>{{x.bidOpeningDate}}</td>
+                                            <td>{{x.tenderStatus}}</td>
+                                            <!-- <td><button mat-raised-button routerLink="/view_applied_bidders">ViewBidders</button></td> -->
+                                            <td><button mat-button (click)="gotoViewBidders(x.tenderId)">ViewBidders</button></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="menu3" class="tab-pane fade in active">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card" *ngFor="let x of viewAllBidders">
+                                <div class="card-body">
+                                    <table align="center"
+                                        class="table table-bordered">
+                                        <tr scope="col">
+                                            <td><b>correspondenceEmail</b>
+                                            <td>{{x.correspondenceEmail}}
+                                            <td><b>companyName</b>
+                                            <td>{{x.companyName}}
+                                        </tr>
+                                        <tr scope="col">
+                                            <td><b>registrationNumber</b>
+                                            <td>{{x.registrationNumber}}
+                                            <td><b>bidderType</b>
+                                            <td>{{x.bidderType}}
+                                        </tr>
+                                        <!-- <tr scope="col">
+                                            <td><b>correspondenceEmail</b></td>
+                                        </tr>
+                                        <tr *ngFor="let x of viewAllBidders">
+                                            <td>{{x.correspondenceEmail}}</td>
+                                        </tr> -->
+                                        
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
