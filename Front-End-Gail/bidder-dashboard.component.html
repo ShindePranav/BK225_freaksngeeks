@@ -1,0 +1,152 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups" >
+            <div class="btn-group mr-2" role="group" aria-label="First group">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#home"><button type="button" class="btn btn-primary">Home</button></a></li>
+                    <li><a data-toggle="tab" href="#menu1"><button type="button" class="btn btn-secondary" >Display All Tenders</button></a></li>
+                    <li><a data-toggle="tab" href="#menu2"><button type="button" class="btn btn-secondary" routerLink="/apply_tenders">Apply for Tender</button></a></li>
+                    <li><a data-toggle="tab" href="#menu3"><button type="button" class="btn btn-secondary">Applied Tenders</button></a></li>
+                </ul>
+                <button type="button" class="btn btn-danger">Logout</button>
+            </div>
+            </div>
+            <div>
+                <h1>
+                    
+                </h1>
+            </div>
+            <div class="container">
+            <div class="tab-content">
+                <div id="home" class="tab-pane fade in active">
+            </div>
+                <div id="menu1" class="tab-pane fade">
+                    <div class="row" id="menu">
+                        <div class="clo-md-4">
+                            <div class="card" id="menu1">
+                                <div class="card-header card-header-danger">
+                                   <center>All tenders</center> 
+                                   <small>
+                                       Tender Status =0(Active)
+                                       1(awarded),2(closed,)
+                                   </small>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table">
+                                        <thead class="thead-light">
+                                            <th scope="col">Tender Title</th>
+                                            <th scope="col">Reference No</th>
+                                            <th scope="col">Item Type</th>
+                                            <th scope="col">Opening Date</th>
+                                            <th scope="col">Closing Date</th>
+                                            <th scope="col">Tender Status</th>
+                                            <th scope="col">Apply</th>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let x of tenders">
+                                                <td>{{x.tenderTitle}}</td>
+                                                <td>{{x.referenceNo}}</td>
+                                                <td>{{x.itemType}}</td>
+                                                <td>{{x.bidOpeningDate}}</td>
+                                                <td>{{x.closingDate}}</td>
+                                                <td>{{x.tenderStatus}}</td>
+                                                <!-- <td><button mat-button routerLink="/view_details">More</button> -->
+                                                <td><button mat-raised-button (click)="more(x.referenceNo)">Apply</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+              </div>
+              <div id="menu2" class="tab-pane fade">
+                <all-tecnders></all-tecnders>
+              </div>
+              <div id="menu3" class="tab-pane fade">
+                    <!-- <div class="row" id="menu">
+                        <div class="clo-md-4">
+                            <div class="card" id="menu1">
+                                <div class="card-header card-header-danger">
+                                    <center>Applied tenders</center> 
+                                </div>
+                                <div class="card-body">
+                                    <table class="table">
+                                        <thead class="thead-light">
+                                            <th scope="col">Tender Id</th>
+                                            <th scope="col">Active Bid</th>
+                                            <th scope="col">Reference No</th>
+                                            <th scope="col">Opening Date</th>
+                                            <th scope="col">Closing Date</th>
+                                            <th scope="col">Tender Status</th>
+                                            <th scope="col">Details</th>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let x of tenders">
+                                                <td>{{x.tenderId}}</td>
+                                                <td>{{x.activeBid}}</td>
+                                                <td>{{x.referenceNo}}</td>
+                                                <td>{{x.closingDate}}</td>
+                                                <td>{{x.bidOpeningDate}}</td>
+                                                <td>{{x.tenderStatus}}</td>
+                                                <td><button mat-button routerLink="/view_details">More</button></td>
+                                            </tr>
+                                      </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="row" id="menu">
+                        <div class="clo-md-4">
+                            <div class="card" id="menu1">
+                                <div class="card-header card-header-danger">
+                                  <center>Applied tenders</center> 
+                                </div>
+                                <div class="card-body">
+                                    <table class="appliedtable">
+                                        <thead class="thead-light">
+                                            <th scope="col">Bidding Status</th>
+                                            <th scope="col">Bidding Id</th>
+                                            <th scope="col">ID</th>
+                                            <th scope="col">Health Score</th>
+                                            <th scope="col">Bidder Id</th>
+                                            <th scope="col">Tender Id</th>
+                                            <th scope="col">ItemId</th>
+                                            <th scope="col">ItemCost</th>
+                                            <th scope="col">ExperienceInField</th>
+                                            <th scope="col">TurnOver</th>
+                                            <th scope="col">Material Description</th>    
+                                            <th scope="col">Duration Of Shipping</th>
+                                            <th scope="col">Currency Type</th>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let x of getappliedTenders">
+                                            <td>{{x.biddingStatus}}</td>
+                                            <td>{{x.biddingId}}</td>
+                                            <td>{{x._id}}</td>
+                                            <td>{{x.healthScore}}</td>
+                                            <td>{{x.bidderId}}</td>
+                                            <td>{{x.tenderId}}</td>
+                                            <td>{{x.itemId}}</td>
+                                            <td>{{x.itemCost}}</td>
+                                            <td>{{x.experienceInField}}</td>
+                                            <td>{{x.turnOver}}</td>
+                                            <td>{{x.materialDescription}}</td>
+                                            <td>{{x.durationOfShipping}}</td>
+                                            <td>{{x.currencyType}}</td>
+                                            <!-- <td><button mat-button routerLink="/view_details">More</button></td> -->
+                                            <!-- <td><button mat-raised-button (click)="more(x.tenderId)">more</button> -->
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+
