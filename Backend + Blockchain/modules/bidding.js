@@ -13,6 +13,10 @@ tenderId:{
     type:String,
     required:true
 },
+referenceNo:{
+type:Number,
+required:true
+},
 itemId:{
     type:String,
     required:true

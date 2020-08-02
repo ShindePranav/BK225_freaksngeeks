@@ -13,9 +13,14 @@ const {BidderRegistration,validateBidderRegistration} = require('../modules/bidd
 const {SubmitedBid}=require('../modules/bidding')
 const mailer=require("../common/mailer");
 const {paymentTransaction, sendMoney}=require('../common/quick')
-const {paymentLogContract}=require('../build/contracts/ABI');
+const {paymentLogContract, gas1, gasPrice1}=require('../build/contracts/ABI');
 const {projectEnggAddress}=require('../common/blockchainaccounts');
-const BN = require('bn.js')
+const {updateTenderStatus}=require('../common/quick')
+
+const BN = require('bn.js');
+const { tenderDetailRegistration } = require('../modules/tender-details');
+
+
 router.get('/view-profile/:loginId',async(req,res)=>{
 	try{
 	   const posts=await GailOfficerRegistration.findOne({loginId:req.params.loginId});
@@ -39,14 +44,7 @@ router.put('/edit-profile/:loginId',async (req,res)=>{
 	res.send("updated successfully");
 });
 
-router.get('/view-bidder/',async(req,res)=>{
-	try{
-	   const posts=await BidderRegistration.find();
-	   res.json(posts);
-	}catch(err){
-		res.json({message:err});
-	}
-});
+
 router.get('/view-bidder/:loginId',async(req,res)=>{
 	try{
 	   const posts=await BidderRegistration.findOne({loginId:req.params.loginId});
@@ -58,47 +56,44 @@ router.get('/view-bidder/:loginId',async(req,res)=>{
 //router.post('/')
 //function to award Bid
 
-router.post('/awardTechnicalBid/:tenderId',async(req,res)=>{
+router.post('/awardBid/',async(req,res)=>{
 
 	console.log("Inside Awarding Bid")
-	const bidder=await BidderRegistration.findOne({loginId:req.body.loginId});
+	const bidder=await BidderRegistration.findOne({'bidderId':req.body.bidderId});
+	const tender=await tenderDetailRegistration.findOne({'tenderId':req.body.tenderId});
 	
-	await TechnicalBid.find().where('tenderId',req.params.tenderId).where('bidderId', bidder.bidderId).update({$set:{biddingStatus:'Technical'}});
-	//const white=await SubmitedBid.find().where('tenderId',req.params.tenderId).where('bidderId', bidder.bidderId);
-	res.send('Awarded Technical');
+	await SubmitedBid.find().where('tenderId',req.body.tenderId).where('bidderId', req.body.bidderId).update({$set:{biddingStatus:'Awarded'}});
+	const white=await SubmitedBid.find().where('tenderId',req.body.tenderId).where('bidderId', req.body.bidderId);
+	if(white){
 
-});
-
-router.post('/awardBid/:tenderId',async(req,res)=>{
-
-	console.log("Inside Awarding Bid")
-	const bidder=await BidderRegistration.findOne({loginId:req.body.loginId});
-	
-	await SubmitedBid.find().where('tenderId',req.params.tenderId).where('bidderId', bidder.bidderId).update({$set:{biddingStatus:'Awarded'}});
-	const white=await SubmitedBid.find().where('tenderId',req.params.tenderId).where('bidderId', bidder.bidderId);
-	console.log(white[0].itemCost);
-	var ans=white[0].itemCost
-	console.log(typeof(ans))
-	ans=ans.toString()
-	console.log(ans)
-	//const trans= await paymentTransaction(projectEnggAddress,bidder.accountAddress,ans);
-	const trans= await sendMoney(projectEnggAddress,bidder.accountAddress);
-	const firstInstalment=(Math.floor(white.itemCost /2)).toString()
-	console.log(trans)
-	if(true){
-		paymentLogContract.methods.createPaymentEntryOne('1','11',projectEnggAddress,projectEnggAddress,'3' , '1')
-		.send({from:projectEnggAddress}).then(function(res){console.log("Success")},
-		(err)=>{console.log(err.message)})
-	}else{
-		console.log("Error in Transaction")
 	}
+	
+	//const trans= await paymentTransaction(projectEnggAddress,bidder.accountAddress,ans);
+	//const trans= await sendMoney(projectEnggAddress,bidder.accountAddress);
+	const firstInstalment=(Math.floor(white.itemCost /2)).toString()
+	//console.log(trans)
+	
+	const status= paymentLogContract.methods.createPaymentEntryOne('1','11',projectEnggAddress,projectEnggAddress,'3' , '1')
+		.send({from:projectEnggAddress,gas:gas1,gasPrice:gasPrice1}).then(function(res){console.log(res);  return true;},
+		(err)=>{console.log(err.message); return res.message;})
+		
+	
+//	const action= await updateTenderStatus(tender.referenceNo,'1')
+	//console.log(action)
+	// console.log(action)
 
 
     const grey=await SubmitedBid.find().where('tenderId',req.params.tenderId).ne('bidderId', bidder.bidderId);
 	console.log(grey,white)
 	await SubmitedBid.find().where('tenderId',req.params.tenderId).where('bidderId').ne(bidder.bidderId).update({$set:{biddingStatus:'Rejected'}});
-	res.send('Awarded');
-
+	
+	if(status){
+		console.log("Payment One Completed");
+		res.send('Awarded');
+	}else{
+		console.log(status);
+		res.send(status);
+	}
 })
 
 

@@ -23,12 +23,12 @@ const sortArray=function(needle,myArray){
     })
     return ans;
     }
-    //Take single first sorted number
-    //console.log(myArray[0]);
-///Create New Blockchain Acc
+   
 const Web3=require('web3');
 const ethers=require('ethers')
-const { account } = require('./blockchainaccounts');
+const { account, qualityAssuranceAddress } = require('./blockchainaccounts');
+const {gas1,gasPrice1}=require('../build/contracts/ABI')
+const {procurementManagerAddress,issueTenderContract}=require('../build/contracts/ABI');
 //////BLOCKCHAIN
 
 var web3 = new Web3("http://127.0.0.1:9545/");
@@ -58,8 +58,14 @@ const  createNewAccount=function(){
     .then((err)=>{return err},(err)=>{return err})
 
   }
+  const updateTenderStatus= async function(ref,state){
+	
+    const tender= await issueTenderContract.methods.updateStatus(ref,state);//,{from : qualityAssuranceAddress,gas: gas1,gasPrice:gasPrice1});
+  
+    return tender
+  }
 
-
+exports.updateTenderStatus=updateTenderStatus
 exports.paymentTransaction=paymentTransaction
 exports.sendMoney=sendMoney;
 exports.getAccountBalance=getAccountBalance;

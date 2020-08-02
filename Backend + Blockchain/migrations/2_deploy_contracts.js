@@ -7,9 +7,9 @@ const {procurementManagerAddress,projectEnggAddress,qualityAssuranceAddress}=req
 
 module.exports = function(deployer) {
   deployer.deploy(issueTender,{from:procurementManagerAddress});
- // deployer.deploy(acceptBid,{from:projectEnggAddress});
-  //deployer.deploy(contractConfirmation,{from:projectEnggAddress});
- // deployer.deploy(qa,{from:qualityAssuranceAddress});
+  deployer.deploy(acceptBid,{from:projectEnggAddress});
+  deployer.deploy(contractConfirmation,{from:projectEnggAddress});
+ deployer.deploy(qa,{from:qualityAssuranceAddress});
   deployer.deploy(pl,{from:projectEnggAddress});
 
 };

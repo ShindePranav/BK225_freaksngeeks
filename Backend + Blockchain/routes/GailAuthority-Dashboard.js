@@ -4,10 +4,12 @@ const _=require("lodash");
 const router=express.Router();
 const Joi= require('joi');
 const mongoose =require('mongoose');
-const {tenderDetailRegistration,validateupdatetenderDetailRegistration}=require("../modules/tender-details");
+const {tenderDetailRegistration,validatetenderDetailRegistration,validateupdatetenderDetailRegistration}=require("../modules/tender-details");
 const {GailOfficerRegistration,validateGailOfficerRegistration,validateUpdateGailOfficerRegistration}=require("../modules/gail-officer-regi");
 //const { validateupdateBidderRegistration } = require("../modules/bidder-registration");
-
+const moment = require('moment')
+const {issueTenderContract, gas1, gasPrice1}=require('../build/contracts/ABI')
+const { procurementManagerAddress}=require('../common/blockchainaccounts')
 //Issue Tender
 //const {issueTenderABI,issueTenderAddress}=require('../build/contracts/ABI')
 const Web3=require('web3')
@@ -17,8 +19,7 @@ var contract;
     web3 = new Web3(web3.currentProvider);
 //Build Contract
 //contract =  new web3.eth.Contract(issueTenderABI,issueTenderAddress);
-
-router.post("/",async(req,res)=>{
+router.post("/issueTender",async(req,res)=>{
     const {error}=validatetenderDetailRegistration(req.body);
     if(error) return res.status(400).send(`Bad Request ${error}`)
 
@@ -44,6 +45,20 @@ router.post("/",async(req,res)=>{
 
     });
   temp.tenderStatus="Active";
+    /*msg=`successfully registered tender-details here is your tenderId:${temp.tenderId} `
+    let mailoptions={
+        from:mailer.fromMail,
+        to:temp.Co,
+        subject:"tender-details",
+        text:msg
+    }
+    mailer.transporter.sendMail(mailoptions,(error,response)=>{
+        if(error){
+            console.log(error);
+        }
+        console.log(response)
+    });*/
+    console.log(temp)
     //////BLOCKCHAIN
     async function createTender(){
        // var tenNumber=7;
@@ -52,8 +67,8 @@ router.post("/",async(req,res)=>{
        bidOpen=moment(temp.bidOpeningDate).unix();
        closeDate=moment(temp.closingDate).unix();
       
-        const result = contract.methods.createTender(refno,temp.tenderTitle,temp.tenderType,temp.productCategory,bidOpen,closeDate)
-        .send({from:"0xc9A3753745CD9C8e9e8cCd5F95dAcd2E8C4ce734",gas:300000}).then(function(res){
+        const result = issueTenderContract.methods.createTender(refno,temp.tenderTitle,temp.tenderType,temp.productCategory,bidOpen,closeDate)
+        .send({from:procurementManagerAddress,gas:300000}).then(function(res){
           
        
           temp = temp.save();
@@ -68,8 +83,10 @@ router.post("/",async(req,res)=>{
        // console.log("Result inside function"+JSON.parse(JSON.stringify(result)))
         return result
       }
-     const ans = await createTender();       
+     const ans = await createTender();
+         
     res.send(ans)
+
     /* web3.eth.subscribe('TenderCreated', function(error, result){
         if (!error){
            // res.send(error)
@@ -94,23 +111,22 @@ router.post("/",async(req,res)=>{
 
 
 
+
+
+
+
+
+
+
 // All Tender
-router.get('/view-activetender',async(req,res)=>{
-	try{
-		
-	   const posts=await tenderDetailRegistration.find({"closingDate": { "$lt": new Date()}})
-	   console.log(posts);
-	   res.send(posts)
-       if(posts){
-       res.send("Successs");
-       }
-	}catch(err){
-		res.json({message:err});
-	}
+router.get("/view-tender",async(req,res)=>{
+    try{
+const posts= await tenderDetailRegistration.find();
+res.json(posts)
+    }catch(err){
+res.json({message:err});
+    }
 });
-
-
-
 
 router.put('/edit-tender/:tenderId',async(req,res)=>{
 const {error}=validateupdatetenderDetailRegistration(req.body);
@@ -123,9 +139,6 @@ const temp= await tenderDetailRegistration.findOneAndUpdate({tenderId:req.params
 	      res.send("updated successfully");
 
 });
-
-
-
 router.put('/edit-profile/:loginId',async (req,res)=>{
 	const { error }= validateUpdateGailOfficerRegistration(req.body)
 	if(error) return res.status(400).send(`Bad Request ${error}`)
@@ -139,8 +152,6 @@ router.put('/edit-profile/:loginId',async (req,res)=>{
 	res.send("updated successfully");
 	
 });
-
-
 router.get('/view-profile/:loginId',async(req,res)=>{
 	try{
 	   const posts=await GailOfficerRegistration.findOne({loginId:req.params.loginId});
@@ -173,26 +184,22 @@ router.get('/view-activetender', async(req,res)=>{
 	}
 });
 
-/*
+
 router.get('/view-tenders',async(req,res)=>{
-	try{
-		//const posts= await tenderDetailRegistration.find();//using limit function after find will get limited database
-		//res.json(posts);
+//	try{
+		
 		async function getTenders(){
-			const ans=await contract.methods.viewTenders().call().then(function(res){
+			const ans=await issueTenderContract.methods.viewTenders().call().then(function(res){
 				console.log(res);
 				return res;
-
-			  //document.getElementById('tenderDetails').innerHTML = res[0]+"    "+res[1]+"    "+res[2]+"    "+res[3]+"    "+res[4];
 			})
 			console.log(ans)
 			return ans
-			
 		  }
 		  const ans = await getTenders()
 		  const array= Array()
 		  for (var id in ans){
-			const tender=await contract.methods.viewTender(ans[id]).call().then(function(res){
+			const tender=await issueTenderContract.methods.viewTender(ans[id]).call().then(function(res){
 				return res;
 			})
 
@@ -201,10 +208,10 @@ router.get('/view-tenders',async(req,res)=>{
 		  res.send(array)
 		
 
-	}catch(err){
-		res.json({error:err});
-	}
-});
+	//}catch(err){
+	//	res.json({error:err});
+	//}
+});/*
 router.get('/view-tenders/:tenderId',async(req,res)=>{
 	try{
 	  // const posts=await tenderDetailRegistration.findOne({tenderId:req.params.tenderId});
@@ -229,5 +236,6 @@ router.get('/view-tenders/:tenderId',async(req,res)=>{
 	}
 });
 */
+
 
 module.exports = router;

@@ -33,7 +33,7 @@ router.post('/:loginId',async (req,res)=>{
         durationOfShipping:req.body.durationOfShipping,
         currencyType:req.body.currencyType,
        // rfq:Joi.string().required()
-      //  biddingStatus:    
+      //  biddingStatus:
         });
 console.log(req.body.experienceInField)
 console.log(req.body.turnOver)
@@ -69,15 +69,15 @@ router.get('/view-bid',async(req,res)=>{
 		res.json({message:err});
 	}
 });
-
+/*
 router.post('/upload-rfq/:loginId', async(req,res)=>{
-    try{
+    //try{
         
         const bidder=await BidderRegistration.findOne({loginId:req.params.loginId})
 		const temp= await SubmitedBid.find({bidderId:bidder.bidderId});//using limit function after find will get limited database
      //   res.json(posts);
-        if(req.files){
-            // console.log(req.files)
+        if(req){
+            console.log((req))
              var file=req.files.file
              var filename=file.name
              console.log(filename)
@@ -97,11 +97,42 @@ router.post('/upload-rfq/:loginId', async(req,res)=>{
              
          }
 
-	}catch(err){
-		res.json({message:err});
-	}
+	//}//catch(err){
+		res.json({message:hello});
+//	}
 })
+*/
+const formidable=require('formidable')
+const fs=require('fs')
 
+ router.post('/upload-rfq/:loginId',function (req, res, next) {
+
+  var form = new formidable.IncomingForm();
+    //Formidable uploads to operating systems tmp dir by default
+    form.uploadDir = "./uploadAcceptedRFQ/";       //set upload directory
+    form.keepExtensions = true;     //keep file extension
+
+    form.parse(req, function(err, fields, files) {
+        res.writeHead(200, {'content-type': 'text/plain'});
+        res.write('received upload:\n\n');
+        console.log("form.bytesReceived");
+        //TESTING
+    // console.log("file size: "+JSON.stringify(files.fileUploaded.size));
+        console.log("file path: "+JSON.stringify(files.fileUploaded.path));
+       console.log("file name: "+JSON.stringify(files.fileUploaded.name));
+        console.log("file type: "+JSON.stringify(files.fileUploaded.type));
+        //console.log("astModifiedDate: "+JSON.stringify(files.fileUploaded.lastModifiedDate));
+
+        //Formidable changes the name of the uploaded file
+        //Rename the file to its original name
+        fs.rename(files.fileUploaded.path, './img/'+"files.fileUploaded.name", function(err) {
+        if (err)
+            throw err;
+          console.log('renamed complete');  
+        });
+          res.end();
+    });
+});
 router.get('/download/:loginId',async(req, res) => {
   /*  var fileLocation  = req.params.rfq;
    // var fileLocation = path.join('./uploads',file);

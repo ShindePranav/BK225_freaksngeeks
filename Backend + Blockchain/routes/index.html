@@ -1,0 +1,293 @@
+<html>
+<head>
+  <title>Web3 — Simple Demo</title>
+</head>
+<body class=”container”>
+  <h1 > Sample Web3 </h1>
+
+  <button name="createTender" onclick="createTender()">Create Tender</button>
+  <p name="createdTenderDetails" id="createdTenderDetails">Initial Details</p>
+
+  <h3>Get Tender Details</h3>
+  <input type="text" name="tenderNumber" id="tenderNumber" value="1" >
+  <button name="getTender" onclick="getTender()">Get Details</button>
+  <p name="tenderDetails" id="tenderDetails">Initial Details</p>
+
+
+  <h3>Get Tender Count</h3>
+  <button name="tenderCount" onclick="getTenderCount()">Get Details</button><br>
+  Initial Count :<label name="tendersCount" id="tendersCount"> 0</label>
+
+  <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+  <script>
+    var web3 = new Web3("http://127.0.0.1:9545/");
+    var contract;
+    web3 = new Web3(web3.currentProvider);
+    var issueTenderABI=[
+    {
+      "inputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "_tenderRefNo",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "_tenderName",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "_tenderType",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "_tenderCategory",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "_bidSubmissionOpeningDate",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "_bidSubmissionClosingDate",
+          "type": "uint256"
+        }
+      ],
+      "name": "TenderCreated",
+      "type": "event"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "Tenders",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "projectEngineer",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_tenderRefNo",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "_tenderName",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "_tenderType",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "_tenderCategory",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_bidSubmissionOpeningDate",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_bidSubmissionClosingDate",
+          "type": "uint256"
+        }
+      ],
+      "name": "createTender",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "viewTenders",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_tenderRefNo",
+          "type": "uint256"
+        }
+      ],
+      "name": "viewTender",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ];
+  var issueTenderAddress = "0xcd59bb1aEC510DD32EE9e6c5347E681ed446bC26";
+
+    contract =  new web3.eth.Contract(issueTenderABI,issueTenderAddress);
+    
+    function getTender(){
+    var num=1;
+    //var num = document.getElementById('tenderNumber').innerHTML;
+    //console.log(num);
+    contract.methods.viewTender(num).call().then(function(res){
+      //$('tendersCount').html(res);
+      console.log(res);
+      document.getElementById('tenderDetails').innerHTML = res[0]+"    "+res[1]+"    "+res[2]+"    "+res[3]+"    "+res[4];
+    })
+    //contract.events.TenderCreated().on("TenderCreated",function(data){
+    //  console.log(data);
+    //})
+  }
+  
+  function createTender(){
+    var tenNumber=7;
+    var stri1="hrfhb";
+    contract.methods.createTender(tenNumber,stri1,stri1,stri1,tenNumber,tenNumber)
+    .send({from:"0xc9A3753745CD9C8e9e8cCd5F95dAcd2E8C4ce734",gas:300000}).then(function(res){
+      console.log(res);
+      console.log("fghfvhrf");
+    })
+  }
+/*  contract.events.TenderCreated({
+    filter: {myIndexedParam: [20,23] }, // Using an array means OR: e.g. 20 or 23
+    fromBlock: 0
+}, function(error, event){ console.log(event); })
+.on('data', function(event){
+    console.log(event); // same results as the optional callback above
+})
+.on('changed', function(event){
+    // remove event from local database
+})
+.on('error', console.error);*/
+var subscription = web3.eth.subscribe('TenderCreated', function(error, result){
+    if (!error)
+        console.log(result);
+})
+.on("data", function(transaction){
+    console.log(transaction);
+});
+
+  function getTenderCount(){
+    contract.methods.viewTenders().call().then(function(res){
+      //$('tendersCount').html(res);
+      console.log(res);
+      document.getElementById('tendersCount').innerHTML = res;
+    })
+  }
+   // var createTenderEvent=contract.events.TenderCreated();
+   // createTenderEvent.watch(function(error,res){
+   //   if(!error){
+    //    console.log(res)
+    //  }
+   // }) '0x0f056b2520603783fe161826bd4b2f7086ea8538'
+
+  contract.events.TenderCreated().on("data",function(res){
+  console.log(res);
+  })
+  //function getTenderDetails(tenderNumber){
+  //  var tenderNumber=$("tenderNumber").value;
+  //  contract.methods.viewTender(tenderNumber).call().then(function(res){
+  //      $("tenderDetails").html(res);
+  //  })
+  //}
+
+</script>
+</body>
+</html>

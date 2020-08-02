@@ -10,6 +10,8 @@ const bcrypt=require('bcrypt');
 const Web3=require('web3');
 //const {issueTenderABI,issueTenderAddress}=require('../build/contracts/ABI');
 const {issueTenderContract}=require('../build/contracts/ABI')
+const {TechnicalBid,validateTechnicalBid}=require('../modules/technical')
+const {uniqueid}=require('../common/quick')
 
 //////BLOCKCHAIN
 var web3 = new Web3("http://127.0.0.1:9545/");
@@ -94,19 +96,20 @@ router.put('/edit-profile/:loginId',async (req,res)=>{
 
 ///Applied Tender 
 router.get('/view-appliedtenders/:loginId',async(req,res)=>{
-	try{
+	//try{
 		const bidder=await BidderRegistration.findOne({loginId:req.params.loginId})
        const applied=await SubmitedBid.find().where('bidderId').equals(bidder.bidderId)
        res.json(applied);
        
-	}catch(err){
-		res.json({message:err});
-	}
+//	}catch(err){
+	//	res.json({message:err});
+	//}
 });
 
 
 
 //apply tender
+
 router.post('/applyTender/:loginId',async (req,res)=>{
     
 	const { error }   = validateTechnicalBid(req.body)
@@ -119,7 +122,7 @@ console.log(req.body)
 let temp=new TechnicalBid({
 
 	bidderId:bidder.bidderId,
-	tenderId:req.body.tenderId,
+	referenceNo:req.body.referenceNo,
 	companyName:req.body.companyName,
 	availabilityStatus:req.body.availabilityStatus,
 	periodOfCompletion:req.body.periodOfCompletion,
@@ -129,7 +132,7 @@ let temp=new TechnicalBid({
 	gradeOfMaterial:req.body.gradeOfMaterial,
    
 	});
-	console.log(temp)
+	
 //console.log(req.body.experienceInField)
 //console.log(req.body.turnOver)
 	//const healthscore=((Quality.marks.Total + req.body.experienceInField + req.body.turnOver)*100) / 200;
@@ -151,17 +154,7 @@ res.send("bidder not found")
 }
 
 });
-router.get('/appliedTechnicalBid/:loginId',async(req,res)=>{
-	try{
-        const bidder=await BidderRegistration.findOne({loginId:req.params.loginId})
-		const posts= await TechnicalBid.find().where('bidderId',bidder.bidderId);
 
-		res.json(posts);
-
-	}catch(err){
-		res.json({message:err});
-	}
-});
 //View Submitted Bid
 router.get('/appliedBid/:loginId',async(req,res)=>{
 	try{
