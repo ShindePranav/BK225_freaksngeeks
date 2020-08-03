@@ -89,10 +89,10 @@ contract IssueTender {
     
     //function to view tenders
     function viewTender( uint _tenderRefNo) public view CheckPresence(_tenderRefNo)
-	returns( uint, 
-    string memory,string memory,//string memory,
-    uint ,uint,
-	uint ){
+	returns( uint referenceNo,
+    string memory tenderTitle,string memory itemType ,//string memory,
+    uint bidOpeningDate , uint closingDate,
+	uint tenderStatus){
         
         uint status = statusToInt(TenderMapped[_tenderRefNo].tenderStatus);
         //allow everyone to view

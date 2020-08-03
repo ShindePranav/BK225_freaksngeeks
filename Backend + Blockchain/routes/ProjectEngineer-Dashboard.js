@@ -11,11 +11,88 @@ const nodemailer=require('nodemailer');
 const {GailOfficerRegistration,validateGailOfficerRegistration,validateUpdateGailOfficerRegistration}=require("../modules/gail-officer-regi");
 const {BidderRegistration,validateBidderRegistration} = require('../modules/bidder-registration')
 const {SubmitedBid}=require('../modules/bidding')
+const {TechnicalBid}=require('../modules/technical')
 const mailer=require("../common/mailer");
 const {paymentTransaction, sendMoney}=require('../common/quick')
-const {paymentLogContract}=require('../build/contracts/ABI');
+const {paymentLogContract, gas1, gasPrice1,acceptBidContract}=require('../build/contracts/ABI');
 const {projectEnggAddress}=require('../common/blockchainaccounts');
-const BN = require('bn.js')
+const {updateTenderStatus}=require('../common/quick')
+//const mailer=require('../common/mailer')
+
+const BN = require('bn.js');
+const { tenderDetailRegistration } = require('../modules/tender-details');
+
+router.get('/view-TechnicalBid/:biddingId',async (req,res)=>{
+try{
+  
+	var bids=await acceptBidContract.methods.displayTechnicalBid(req.params.biddingId).call({from:projectEnggAddress}).then((s)=>{return s},(e)=>{return e})
+	console.log(bids);
+	res.send(bids)
+}catch(e){
+	console.log("EROROROR")
+}});
+router.get('/view-TechnicalBid/',async (req,res)=>{
+	try{
+	  
+		async function getBid(){
+			var bids=await acceptBidContract.methods.displayAllBids().call({from:projectEnggAddress}).then((s)=>{return s},(e)=>{return e})
+			console.log(bids)
+			return bids
+		  }
+		  const ans = await getBid()
+		  const array= Array()
+		  for (var id in ans){
+			const bid=await acceptBidContract.methods.displayTechnicalBid(ans[id]).call({from:projectEnggAddress}).then(function(res){
+				return res;
+			})
+
+             array.push(bid)
+		  }
+		  res.send(array)
+	}catch(e){
+		console.log("EROROROR")
+	}
+
+})
+router.get('/view-FinancialBid/',async (req,res)=>{
+//try{
+
+		async function getBid(){
+			var bids=await acceptBidContract.methods.displayAllBids().call({from:projectEnggAddress}).then((s)=>{return s},(e)=>{return e})
+			console.log(bids)
+			return bids
+		  }
+		  const ans = await getBid()
+		  const array= Array()
+		  for (var id in ans){
+			 
+			const bid=await acceptBidContract.methods.displayFinancialBid(ans[id]).call({from:projectEnggAddress}).
+			then(function(res){
+				console.log(res)
+				return res;
+			},(e)=>{console.log(e.message)})
+			console.log(array)
+			array.push(bid)
+			
+
+             
+		  }
+		  res.send(array)
+
+	//}catch(e){
+	//	console.log("EROROROR")
+	//}
+	/*const bid=await acceptBidContract.methods.displayFinancialBid('suie777').call({from:projectEnggAddress}).
+			then(function(res){
+			
+				return res;
+			},(e)=>{return e.message})
+			res.send(bid)*/
+
+})
+
+
+
 router.get('/view-profile/:loginId',async(req,res)=>{
 	try{
 	   const posts=await GailOfficerRegistration.findOne({loginId:req.params.loginId});
@@ -25,6 +102,7 @@ router.get('/view-profile/:loginId',async(req,res)=>{
 		res.json({message:err});
 	}
 });
+
 
 router.put('/edit-profile/:loginId',async (req,res)=>{
 	const { error }   = validateUpdateGailOfficerRegistration(req.body)
@@ -39,14 +117,7 @@ router.put('/edit-profile/:loginId',async (req,res)=>{
 	res.send("updated successfully");
 });
 
-router.get('/view-bidder/',async(req,res)=>{
-	try{
-	   const posts=await BidderRegistration.find();
-	   res.json(posts);
-	}catch(err){
-		res.json({message:err});
-	}
-});
+
 router.get('/view-bidder/:loginId',async(req,res)=>{
 	try{
 	   const posts=await BidderRegistration.findOne({loginId:req.params.loginId});
@@ -55,50 +126,83 @@ router.get('/view-bidder/:loginId',async(req,res)=>{
 		res.json({message:err});
 	}
 });
+router.get('/view-bidder',async(req,res)=>{
+	try{
+	   const posts=await BidderRegistration.find();
+	   res.json(posts);
+	}catch(err){
+		res.json({message:err});
+	}
+});
 //router.post('/')
 //function to award Bid
 
-router.post('/awardTechnicalBid/:tenderId',async(req,res)=>{
+router.post('/awardTechnicalBid/:biddingId',async(req,res)=>{
 
 	console.log("Inside Awarding Bid")
-	const bidder=await BidderRegistration.findOne({loginId:req.body.loginId});
-	
-	await TechnicalBid.find().where('tenderId',req.params.tenderId).where('bidderId', bidder.bidderId).update({$set:{biddingStatus:'Technical'}});
-	//const white=await SubmitedBid.find().where('tenderId',req.params.tenderId).where('bidderId', bidder.bidderId);
-	res.send('Awarded Technical');
 
-});
-
-router.post('/awardBid/:tenderId',async(req,res)=>{
-
-	console.log("Inside Awarding Bid")
-	const bidder=await BidderRegistration.findOne({loginId:req.body.loginId});
-	
-	await SubmitedBid.find().where('tenderId',req.params.tenderId).where('bidderId', bidder.bidderId).update({$set:{biddingStatus:'Awarded'}});
-	const white=await SubmitedBid.find().where('tenderId',req.params.tenderId).where('bidderId', bidder.bidderId);
-	console.log(white[0].itemCost);
-	var ans=white[0].itemCost
-	console.log(typeof(ans))
-	ans=ans.toString()
-	console.log(ans)
-	//const trans= await paymentTransaction(projectEnggAddress,bidder.accountAddress,ans);
-	const trans= await sendMoney(projectEnggAddress,bidder.accountAddress);
-	const firstInstalment=(Math.floor(white.itemCost /2)).toString()
-	console.log(trans)
-	if(true){
-		paymentLogContract.methods.createPaymentEntryOne('1','11',projectEnggAddress,projectEnggAddress,'3' , '1')
-		.send({from:projectEnggAddress}).then(function(res){console.log("Success")},
-		(err)=>{console.log(err.message)})
+	//var bids=await acceptBidContract.methods.displayTechnicalBid(req.params.biddingId).call({from:projectEnggAddress}).then((s)=>{return s},(e)=>{return e})
+	//console.log(bids);
+    
+	var bids=await acceptBidContract.methods.updateStatus(req.params.biddingId,'1').send({from:projectEnggAddress}).then((s)=>{return true},(e)=>{res.send(e.message)})
+	if(bids){
+		res.send(' Technical bid Accepted')
 	}else{
-		console.log("Error in Transaction")
+		res.send('Bid not found')
+	}
+	
+})
+
+router.post('/awardFinancialBid/:key',async(req,res)=>{
+
+	console.log("Inside Awarding Bid")
+
+   const techBid=await  TechnicalBid.findOne().where('key',req.params.key)
+	console.log(techBid)
+	const Bidder=await  BidderRegistration.findOne().where('bidderId',techBid.bidderId)
+	let msg=`Greeting You are Awarded.....!!!  First RTGS payment is initiated .
+				
+				Team FreaksNGeeks`
+
+	let mailoptions={
+		from:mailer.fromMail,
+		to:Bidder.correspondenceEmail,
+		subject:"Gail Tender",
+		text:msg
 	}
 
+//send email
+	mailsent=await mailer.transporter.sendMail(mailoptions,(error,response)=>{
+		if(error){
+			console.log(error);
+		}
+		console.log(response)
+	});
 
-    const grey=await SubmitedBid.find().where('tenderId',req.params.tenderId).ne('bidderId', bidder.bidderId);
-	console.log(grey,white)
-	await SubmitedBid.find().where('tenderId',req.params.tenderId).where('bidderId').ne(bidder.bidderId).update({$set:{biddingStatus:'Rejected'}});
-	res.send('Awarded');
+	const bid=await acceptBidContract.methods.displayFinancialBid(req.params.biddingId).call({from:projectEnggAddress}).then(function(res){
+		return res;
+	})
+	
+	if(bid.key==techBid.key){
+		var bids=await acceptBidContract.methods.updateStatus(req.params.biddingId,'3').call({from:projectEnggAddress}).then((s)=>{return true},(e)=>{res.send(e.message)})
 
+	}
+	var bids=await acceptBidContract.methods.updateStatus(req.params.biddingId,'1').call({from:projectEnggAddress}).then((s)=>{return true},(e)=>{res.send(e.message)})
+	if(bids==true){
+		const status= paymentLogContract.methods.createPaymentEntryOne('1','11',projectEnggAddress,projectEnggAddress,'3' , '1')
+		.send({from:projectEnggAddress,gas:gas1,gasPrice:gasPrice1}).then(function(res){console.log(res);  return true;},
+		(err)=>{console.log(err.message); return res.message;})
+
+	}
+	
+	
+	if(status){
+		console.log("Payment One Completed");
+		res.send('Awarded');
+	}else{
+		console.log(status);
+	res.send(status);
+	}
 })
 
 

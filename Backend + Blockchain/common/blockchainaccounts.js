@@ -17,3 +17,6 @@ module.exports.projectEnggAddress=account[1];
 module.exports.qualityAssuranceAddress=account[2];
 module.exports.shippingAddress=account[3];
 module.exports.account=account;
+module.exports.owner=account[7];
+module.exports.midpoint=account[8];
+module.exports.destination=account[9];

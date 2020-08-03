@@ -77,6 +77,8 @@ app.get('/home', function(req, res) {
 app.use('/gail',user);//done
 app.use('/' ,home);
 //app.use('/gail',user);//done
+var bodyParser = require('body-parser');
+app.use(bodyParser({defer: true}));
 app.use('/gail/bidderregistration',bidderRegistrtion);
 app.use('/gail/gailofficerregistration',gailOfficerRegistration)
 app.use('/gail/forgetpassword',otpVerification)

@@ -26,7 +26,7 @@ router.post("/",async(req,res)=>{
 
     let temp=tenderDetailRegistration({
         tenderId:req.body.tenderId,
-		activeBid:req.body.activeBid,
+		// activeBid:req.body.activeBid,
 		tenderTitle:req.body.tenderTitle,
         referenceNo:req.body.referenceNo,
 		closingDate:req.body.closingDate,

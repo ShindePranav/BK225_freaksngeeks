@@ -16,8 +16,6 @@ router.post('/',async (req,res)=>{
 	const { error }   = validateBidderRegistration(req.body)
 	if(error) return res.status(400).send(`Bad Request ${error}`)
 
-	//const genre = await Genres.findById(req.body.genreId)
-	//if(!genre) return res.status(400).send('Wrong Genre Id')
 
 	const salt =await bcrypt.genSalt(10)
 	const hashedPassword=await bcrypt.hash(req.body.password,salt)
@@ -59,9 +57,10 @@ router.post('/',async (req,res)=>{
 			await sendMoney(account[9],add)
 			const bal= await getAccountBalance(add);
 			temp.accountBalance=bal;
-	//email options
-	let msg=`YOur have Registerred succesfully.  Here Are your details 
-				Login id :${temp.loginId} Password: ${req.body.password} Bidding COmpany Id: ${bidderId}`
+			console.log("Inside Bidder Registeration")
+	let msg=`You have Registered As Bidder Succesfully to GAIL E-tendering System .  Here Are your details 
+				Login id :${temp.loginId} Password: ${req.body.password} Bidding Company Id: ${bidderId}
+				Team FreaksNGeeks`
 
 	let mailoptions={
 		from:mailer.fromMail,
@@ -78,8 +77,6 @@ router.post('/',async (req,res)=>{
 		console.log(response)
 	});
 	
-
-
 	temp = await temp.save();
 	res.send("Succefully Registered as bidder")
 

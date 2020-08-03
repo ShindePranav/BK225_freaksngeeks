@@ -1,0 +1,210 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+            <div class="btn-group mr-2" role="group" aria-label="First group">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#home"><button type="button"
+                                class="btn btn-primary">Home</button></a></li>
+                    <li><a data-toggle="tab" href="#menu1"><button type="button" class="btn btn-secondary">Display All
+                                Tenders</button></a></li>
+                    <li><a data-toggle="tab" href="#menu2"><button type="button" class="btn btn-secondary">Pending Tenders</button></a></li>
+                    <li><a data-toggle="tab" href="#menu3"><button type="button" class="btn btn-secondary">Active
+                                Tenders</button></a></li>
+                </ul>
+                <button type="button" class="btn btn-danger">Logout</button>
+            </div>
+        </div>
+        <div class="container">
+            <div class="tab-content">
+                <!-- Id Home Tab -->
+                <div id="home" class="tab-pane fade in active">
+
+                </div>
+                <!-- ID Menu1 Display All Tenders -->
+                <div id="menu1" class="tab-pane fade">
+                    <div class="row" id="menu">
+                        <div class="clo-md-4">
+                            <div class="card" id="menu1">
+                                <div class="card-header card-header-danger">
+                                    <center>All tenders</center>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table">
+                                        <thead class="thead-light">
+                                            <th scope="col">Tender Id</th>
+                                            <th scope="col">Active Bid</th>
+                                            <th scope="col">Reference No</th>
+                                            <th scope="col">Opening Date</th>
+                                            <th scope="col">Closing Date</th>
+                                            <th scope="col">Tender Status</th>
+                                            <th scope="col">Details</th>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let x of tenders">
+                                                <td>{{x.tenderId}}</td>
+                                                <td>{{x.activeBid}}</td>
+                                                <td>{{x.referenceNo}}</td>
+                                                <td>{{x.closingDate}}</td>
+                                                <td>{{x.bidOpeningDate}}</td>
+                                                <td>{{x.tenderStatus}}</td>
+                                                <td><a data-toggle="tab" href="#viewDetails" ><button (click)="more(x.tenderId)">more</button></a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ID viewDetails Showing Details of Tenders -->
+                <div id="viewDetails" class="tab-pane fade in active">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <table *ngFor="let x of tenderDetailData" align="center"
+                                        class="table table-bordered">
+                                        <tr scope="col">
+                                            <td>Tender Id
+                                            <td>{{x.tenderId}}
+                                            <td>Active Bid
+                                            <td>{{x.activeBid}}
+                                            <td>Reference No</td>{{x.referenceNo}}
+                                        </tr>
+                                        <tr scope="col">
+                                            <td>Tender Title
+                                            <td>{{x.tenderTitle}}
+                                            <td>Reference No
+                                            <td>{{x.referenceNo}}
+                                            <td>Closing Date
+                                            <td>{{x.closingDate}}
+                                        </tr>
+                                        <tr scope="col">
+                                            <td>BidOpening Date
+                                            <td>{{x.bidOpeningDate}}
+                                            <td>Tender Status
+                                            <td>{{x.tenderStatus}}
+                                            <td>Tender Type
+                                            <td>{{x.tenderType}}
+                                        </tr>
+                                        <tr scope="col">
+                                            <td>Authority
+                                            <td>{{x.authority}}
+                                            <td>Tender Location
+                                            <td>{{x.tenderLocation}}
+                                            <td>Item Id
+                                            <td>{{x.itemId}}
+                                        </tr>
+                                        <tr scope="col">
+                                            <td>Unit
+                                            <td>{{x.unit}}
+                                            <td>Product
+                                            <td>{{x.product}}
+                                            <td>Quantity
+                                            <td>{{x.quantity}}
+                                        </tr>
+                                        <tr scope="col">
+                                            <td>Product Category</td>{{x.productCategory}}
+                                            <td>Description
+                                            <td>{{x.description}}
+                                            <td>Produc tId
+                                            <td>{{x.productId}}
+                                        </tr>
+                                        <tr scope="col">
+                                            <td>Item Type
+                                            <td>{{x.itemType}}
+                                            <td>Currency
+                                            <td>{{x.currency}}
+                                            <td>Version
+                                            <td>{{x.__v}}
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- ID menu2 Pending Tenders -->
+                <div id="menu2" class="tab-pane fade in active">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card" >
+                                <div class="card-body">
+                                    <table align="center" class="table table-bordered">
+                                        <tr scope="col">
+                                            <td><B>Tender Id</B></td>
+                                            <td><B>Active Bid</B></td>
+                                            <td><B>Tender Title</B></td>
+                                            <td><B>Closing Date</B></td>
+                                            <td><B>BidOpening Date</B></td>
+                                            <td><B>Tender Status</B></td>
+                                            <td><B>Check Bids</B></td>
+                                        </tr>
+                                        <!-- <tr scope="col">
+                                            <td><B>Tender Id</B></td>
+                                            <td>{{x.tenderId}}</td>
+                                            <td><B>Active Bid</B></td>
+                                            <td>{{x.activeBid}}</td>
+                                            <td><B>Tender Title</B></td>
+                                            <td>{{x.tenderTitle}}</td>
+                                        </tr>
+                                        <tr scope="col">
+                                            <td><B>Reference No</B></td>
+                                            <td>{{x.referenceNo}}</td>
+                                            <td><B>Closing Date</B></td>
+                                            <td>{{x.closingDate}}</td>
+                                            <td><B>BidOpening Date</B></td>
+                                            <td>{{x.bidOpeningDate}}</td>
+                                        </tr>
+                                        <tr scope="col">
+                                            <td><B>Tender Status</B></td>
+                                            <td>{{x.tenderStatus}}</td>
+                                            <td><B>Tender Type</B></td>
+                                            <td>{{x.tenderType}}</td>
+                                            <td><B>tenderLocation</B></td>
+                                            <td>{{x.tenderLocation}}</td>
+                                        </tr>
+                                        <tr scope="col">
+                                            <td><B>Item Id</B></td>
+                                            <td>{{x.itemId}}</td>
+                                            <td><B>unit</B></td>
+                                            <td>{{x.unit}}</td>
+                                            <td><B>product</B></td>
+                                            <td>{{x.product}}</td>
+                                        </tr>
+                                        <tr scope="col">
+                                            <td><B>Quantity</B></td>
+                                            <td>{{x.quantity}}</td>
+                                            <td><B>productCategory</B></td>
+                                            <td>{{x.productCategory}}</td>
+                                            <td><B>description</B></td>
+                                            <td>{{x.description}}</td>
+                                        </tr>
+                                        <tr scope="col">
+                                            <td><B>Product Id</B></td>
+                                            <td>{{x.productId}}</td>
+                                            <td><B>Item Type</B></td>
+                                            <td>{{x.itemType}}</td>
+                                            <td><B>Currency Type</B></td>
+                                            <td>{{x.currencyType}}</td>
+                                        </tr> -->
+                                        <tr scope="col" *ngFor="let x of activetendersData">
+                                            <td>{{x.tenderId}}</td>
+                                            <td>{{x.activeBid}}</td>
+                                            <td>{{x.tenderTitle}}</td>
+                                            <td>{{x.closingDate}}</td>
+                                            <td>{{x.bidOpeningDate}}</td>
+                                            <td>{{x.tenderStatus}}</td>
+                                            <td><button>ViewBidders</button></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
