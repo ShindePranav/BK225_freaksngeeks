@@ -85,7 +85,7 @@ const tenderDetailRegistration=mongoose.model("tenderDetailRegistration",new mon
 function validatetenderDetailRegistration(obj){
     const schema={
         tenderId:Joi.string().min(1).max(100).required(),
-		activeBid:Joi.string().min(5).max(100).required(),
+		//activeBid:Joi.string().min(5).max(100).required(),
 		tenderTitle:Joi.string().min(4).max(100).required(),
         referenceNo:Joi.string().min(3).max(100).required(),
 		closingDate:Joi.date().required(),

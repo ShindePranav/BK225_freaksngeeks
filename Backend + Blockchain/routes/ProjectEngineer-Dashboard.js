@@ -13,14 +13,48 @@ const {BidderRegistration,validateBidderRegistration} = require('../modules/bidd
 const {SubmitedBid}=require('../modules/bidding')
 const mailer=require("../common/mailer");
 const {paymentTransaction, sendMoney}=require('../common/quick')
-const {paymentLogContract, gas1, gasPrice1}=require('../build/contracts/ABI');
+const {paymentLogContract, gas1, gasPrice1,acceptBidContract}=require('../build/contracts/ABI');
 const {projectEnggAddress}=require('../common/blockchainaccounts');
 const {updateTenderStatus}=require('../common/quick')
 
 const BN = require('bn.js');
 const { tenderDetailRegistration } = require('../modules/tender-details');
 
+router.get('/view-TechnicalBid/:biddingId',async (req,res)=>{
+try{
+  
+	var bids=await acceptBidContract.methods.displayTechnicalBid(req.params.biddingId).call({from:projectEnggAddress}).then((s)=>{return s},(e)=>{return e})
+	console.log(bids);
+	res.send(bids)
+}catch(e){
+	console.log("EROROROR")
+}});
+router.get('/view-TechnicalBid/',async (req,res)=>{
+	try{
+	  
+		async function getBid(){
+			var bids=await acceptBidContract.methods.displayAllBids().call({from:projectEnggAddress}).then((s)=>{return s},(e)=>{return e})
+			console.log(bids)
+			return bids
+		  }
+		  const ans = await getBid()
+		  const array= Array()
+		  for (var id in ans){
+			const bid=await acceptBidContract.methods.displayTechnicalBid(ans[id]).call({from:projectEnggAddress}).then(function(res){
+				return res;
+			})
 
+             array.push(bid)
+		  }
+		  res.send(array)
+	}catch(e){
+		console.log("EROROROR")
+	}
+
+
+
+
+})
 router.get('/view-profile/:loginId',async(req,res)=>{
 	try{
 	   const posts=await GailOfficerRegistration.findOne({loginId:req.params.loginId});
@@ -30,6 +64,7 @@ router.get('/view-profile/:loginId',async(req,res)=>{
 		res.json({message:err});
 	}
 });
+
 
 router.put('/edit-profile/:loginId',async (req,res)=>{
 	const { error }   = validateUpdateGailOfficerRegistration(req.body)
@@ -48,6 +83,14 @@ router.put('/edit-profile/:loginId',async (req,res)=>{
 router.get('/view-bidder/:loginId',async(req,res)=>{
 	try{
 	   const posts=await BidderRegistration.findOne({loginId:req.params.loginId});
+	   res.json(posts);
+	}catch(err){
+		res.json({message:err});
+	}
+});
+router.get('/view-bidder',async(req,res)=>{
+	try{
+	   const posts=await BidderRegistration.find();
 	   res.json(posts);
 	}catch(err){
 		res.json({message:err});

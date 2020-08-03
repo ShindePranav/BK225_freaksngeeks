@@ -14,6 +14,8 @@ let qaData = fs.readFileSync(path.join(__dirname+'/QA.json'));
 let qa= JSON.parse(qaData);
 let abData = fs.readFileSync(path.join(__dirname+'/AcceptBid.json'));
 let ab= JSON.parse(abData);
+let scData = fs.readFileSync(path.join(__dirname+'/shipmentContract.json'));
+let sc= JSON.parse(scData);
 
 let plData = fs.readFileSync(path.join(__dirname+'/PaymentLog.json'));
 let pl= JSON.parse(plData);
@@ -28,7 +30,7 @@ var contract;
 //console.log(qa['networks']['5777']['address'])
 
 module.exports.issueTenderContract= new web3.eth.Contract(it['abi'],it['networks']['5777']['address']);
-
+module.exports.shipmentContract= new web3.eth.Contract(sc['abi'],sc['networks']['5777']['address']);
 module.exports.conConfContract =  new web3.eth.Contract(cc['abi'],cc['networks']['5777']['address']);
 module.exports.acceptBidContract =  new web3.eth.Contract(ab['abi'],ab['networks']['5777']['address']);
 module.exports.paymentLogContract =  new web3.eth.Contract(pl['abi'],pl['networks']['5777']['address']);

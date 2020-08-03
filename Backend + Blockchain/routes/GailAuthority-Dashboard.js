@@ -9,7 +9,7 @@ const {GailOfficerRegistration,validateGailOfficerRegistration,validateUpdateGai
 //const { validateupdateBidderRegistration } = require("../modules/bidder-registration");
 const moment = require('moment')
 const {issueTenderContract, gas1, gasPrice1}=require('../build/contracts/ABI')
-const { procurementManagerAddress}=require('../common/blockchainaccounts')
+const {procurementManagerAddress}=require('../common/blockchainaccounts')
 //Issue Tender
 //const {issueTenderABI,issueTenderAddress}=require('../build/contracts/ABI')
 const Web3=require('web3')

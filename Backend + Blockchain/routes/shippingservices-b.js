@@ -7,6 +7,12 @@ const constant = require('../common/appLevelConstant')
 const {sortArray}=require('../common/quick');
 const { request } = require('express');
 
+const Web3=require('web3')
+var web3 = new Web3("http://127.0.0.1:9545/");
+web3 = new Web3(web3.currentProvider);
+
+
+
 router.post('/:loginId', async function(req,res) {
 
     var ques = req.body.type;
@@ -122,7 +128,9 @@ res.send("successfully Registered Gail Shipping Authority ")
 
 });
 
+router("/",async (req,res)=>{
 
+})
     
    
 module.exports = router;

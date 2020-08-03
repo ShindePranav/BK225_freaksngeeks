@@ -9,10 +9,10 @@ companyName:{
 	type:String,
 		required:true
  },
-//tenderId:{
-  //  type:String,
-  //  required:true
-//},
+referenceNo:{
+    type:Number,
+   required:true
+},
 availabilityStatus:{
     type:String,
     required:true
@@ -34,7 +34,7 @@ itemName:{
     required:true
 },
 biddingStatus:{
-    type:String, ///Level Wise Accepeted , Desk1, Desk 2 , Rejected
+    type:String, ///0,1,2,3--->submitted, techincal , rejected awarded
     default:"Not Submitted"
 
 },
@@ -50,9 +50,18 @@ biddingId:{
 bidderId:{
     type:String
 },
+amount:{
+    type:Number,
+   // require:true
+},
+keyStatus:{
+    type:Boolean,
+    //required:true
+    default:false
+}
+,
 
-
-    date:Date
+biddingDate:Date
     
 
 }))
@@ -62,13 +71,14 @@ function validateTechnicalBid(obj){
 	const schema={
        //bidderId:Joi.string().required(),
        companyName:Joi.string().required(),
-      tenderId:Joi.string().required(),
+      referenceNo:Joi.string().required(),
        availabilityStatus:Joi.number().required(),
        periodOfCompletion:Joi.string().required(),
        experienceInField:Joi.string().required(),
        turnOver:Joi.string().required(),
        itemName:Joi.string().required(),
        gradeOfMaterial:Joi.string().required(),
+       amount:Joi.number().required()
        // rfq:Joi.string().required(),
         //biddingStatus:Joi.string().required()
         
