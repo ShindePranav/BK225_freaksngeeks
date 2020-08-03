@@ -8036,12 +8036,12 @@
         }
       },
       "links": {},
-      "address": "0xB4cD3602748E3DBbd601D90DA6aB25434Da0A6C9",
-      "transactionHash": "0x05d512327517612f2c7c89a51e666305c5cc5fa1ae1f519038d85e54211165ae"
+      "address": "0x53c2149839e0aBc4a32B344b61C37E6A6bF1c961",
+      "transactionHash": "0x783a83f66d0d63a9b7efde938e732a836cb9851c78aa8085131ee75367fa8675"
     }
   },
   "schemaVersion": "3.2.3",
-  "updatedAt": "2020-08-03T01:26:02.221Z",
+  "updatedAt": "2020-08-03T02:43:01.833Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}

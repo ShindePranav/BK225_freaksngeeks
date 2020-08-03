@@ -152,17 +152,19 @@ let temp=new TechnicalBid({
   temp.biddingId=biddingId
   const key=uniqueid(6,"1234567890")
 
-console.log(tender['3'])
+//console.log(tender['3'])
  // accept.acceptBid("b1","11","name","1111","2000","bidderId1","1234","500000")
 ///////////////////////////
+
   const accept=await acceptBidContract.methods.acceptBid(biddingId,temp.referenceNo,temp.companyName,tender[3],tender[4],
-  temp.bidderId,key.toString(),(temp.amount).toString()).send({from:projectEnggAddress,gas:gas1}).then((errsuccess)=>{return errsuccess},(err)=>{return err})
+  temp.bidderId,key.toString(),(temp.amount).toString()).send({from:projectEnggAddress,gas:gas1}).then((errsuccess)=>{return true},(err)=>{return false})
   //const accept = await acceptBidContract.methods.acceptBid("b2","11","name","1111","2000","bidderId1","1234","500000").send({from:projectEnggAddress,gas:gas1}).then((errsuccess)=>{return errsuccess},(err)=>{return err})
-	
-console.log(accept)
+  
+ 
 console.log(temp)
 temp = await temp.save();
-res.send("Sucessfully Applied Bid ")
+res.send(accept)
+//res.send("Sucessfully Applied Bid ")
 } 
 else{
 res.send("bidder not found")

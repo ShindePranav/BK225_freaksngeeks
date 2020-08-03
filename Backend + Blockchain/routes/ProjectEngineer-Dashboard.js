@@ -51,10 +51,10 @@ router.get('/view-TechnicalBid/',async (req,res)=>{
 		console.log("EROROROR")
 	}
 
-
-
-
 })
+
+
+
 router.get('/view-profile/:loginId',async(req,res)=>{
 	try{
 	   const posts=await GailOfficerRegistration.findOne({loginId:req.params.loginId});
@@ -99,17 +99,15 @@ router.get('/view-bidder',async(req,res)=>{
 //router.post('/')
 //function to award Bid
 
-router.post('/awardBid/',async(req,res)=>{
+router.post('/awardTechnicalBid/:biddingId',async(req,res)=>{
 
 	console.log("Inside Awarding Bid")
-	const bidder=await BidderRegistration.findOne({'bidderId':req.body.bidderId});
+	/*/const bidder=await BidderRegistration.findOne({'bidderId':req.body.bidderId});
 	const tender=await tenderDetailRegistration.findOne({'tenderId':req.body.tenderId});
 	
 	await SubmitedBid.find().where('tenderId',req.body.tenderId).where('bidderId', req.body.bidderId).update({$set:{biddingStatus:'Awarded'}});
 	const white=await SubmitedBid.find().where('tenderId',req.body.tenderId).where('bidderId', req.body.bidderId);
-	if(white){
-
-	}
+	*/
 	
 	//const trans= await paymentTransaction(projectEnggAddress,bidder.accountAddress,ans);
 	//const trans= await sendMoney(projectEnggAddress,bidder.accountAddress);

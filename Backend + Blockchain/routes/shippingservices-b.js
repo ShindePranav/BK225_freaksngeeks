@@ -6,6 +6,8 @@ const {BidderRegistration,}=require("../modules/bidder-registration")
 const constant = require('../common/appLevelConstant')
 const {sortArray}=require('../common/quick');
 const { request } = require('express');
+const {shipmentContract}=require('../build/contracts/ABI');
+const {owner,midpoint,destination}=require('../common/blockchainaccounts')
 
 const Web3=require('web3')
 var web3 = new Web3("http://127.0.0.1:9545/");
@@ -77,6 +79,10 @@ contactPersonMobNo:req.body.contactPersonMobNo,
 contactPersonEmailId:req.body.contactPersonEmailId,
 postalCode:req.body.postalCode
          })
+ //setconditions(string memory _location,uint _quantity,address _receiverAddess,string memory _asset)
+        const ship=await shipmentContract.methods.setconditions(temp.postalCode,temp.itemId,destination,"Steel Pipe")
+         .send({from:owner}).then((s)=>{return s},(e)=>{return e})
+         console.log(ship)
 
          // mail corfirming the shipping
              msg=`successfully registered project engineer here is your data:${temp.contactPersonEmailId} 
@@ -127,8 +133,34 @@ temp = await temp.save();
 res.send("successfully Registered Gail Shipping Authority ")
 
 });
+//sendShipment(string memory _asset,string memory trackingNo, string memory _destination,uint _quantity,address _reciever)
+router.post('/shipnext/:loginId',async (req,res)=>{
+    const ship=await shipmentContract.methods.sendShipment("Steel Pipe","1234","postalCode","100",destination)
+         .send({from:midpoint,gas:300000}).then((s)=>{return s},(e)=>{return e})
+         console.log(ship)
+})
 
-router("/",async (req,res)=>{
+//getshipment(string memory _location,uint _quantity,string memory _asset,string memory trackingNo)
+router.post('/receivedShipment/:loginId', async (req,res)=>{
+
+    const receive=await shipmentContract.methods.getshipment("postalCode","100","Steel Pipe","1234")
+         .send({from:destination,gas:300000}).then((s)=>{return s},(e)=>{return e})
+         console.log(receive)
+
+})
+router.post('/forwardShipment/:loginId', async (req,res)=>{
+
+    const receive=await shipmentContract.methods.getshipment("postalCode","100","Steel Pipe","1234")
+         .send({from:midpoint,gas:300000}).then((s)=>{return s},(e)=>{return e})
+         console.log(receive)
+
+})
+//showProvenance(string memory _trackingNo)
+router.post('/history/:loginid',async (req,res)=>{
+    const hist=await shipmentContract.methods.showProvenance("1234")
+         .send({from:midpoint,gas:300000}).then((s)=>{return s},(e)=>{return e})
+         console.log(hist)
+         res.send(hist);
 
 })
     
