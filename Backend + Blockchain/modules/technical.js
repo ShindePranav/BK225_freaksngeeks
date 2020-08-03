@@ -60,6 +60,9 @@ keyStatus:{
     default:false
 }
 ,
+key:{
+    type:String
+},
 
 biddingDate:Date
     

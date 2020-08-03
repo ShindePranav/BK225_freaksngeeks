@@ -26,7 +26,7 @@ contract AcceptBid  {
   //event AcceptedBid(string memory biddingId, uint tenderRefNo, string memory bidderId, uint biddingDate);
   modifier onlyPresent(string memory _bidId){   require(idExist[_bidId]==1,"No entry Present!"); _;   }
 
-  modifier checkStatus(string memory _bidId){   require(BidMap[_bidId].status==1,"Not Accessible Technically");  _; }
+  modifier checkStatus(string memory _bidId){   require(BidMap[_bidId].status>0,"Not Accessible Technically");  _; }
   
   modifier onlyManager(){  require(msg.sender==manager,"Access Denied!"); _;  }
   
@@ -73,6 +73,12 @@ contract AcceptBid  {
       returns (string memory key, uint bidAmount){
       return(BidMap[_bidId].key,BidMap[_bidId].bidAmount);
   }
+  /*
+  function displayFinancialBid(string memory _bidId)  public view  checkStatus(_bidId) 
+      returns (string memory key,uint bidAmount,string memory bidId){
+      return(BidMap[_bidId].key,BidMap[_bidId].bidAmount,_bidId);
+  }
+  */
 
  function updateStatus(string memory _bidId, uint newStatus) public onlyManager newStatusValidity(newStatus) 
  returns (bool){

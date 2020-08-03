@@ -165,7 +165,7 @@ router.post('/uploadFBid/:loginId',function (req, res, next) {
 const path=require('path')
 router.get('/download/',async(req, res) => {
   //  var fileLocation  = req.params.rfq;
-    var fileLocation = path.join(__dirname+'./financialBid/file.html');
+    var fileLocation = path.join(__dirname+'/file.html');
     console.log(fileLocation);
     res.download(fileLocation);
     //const bidder=await BidderRegistration.findOne({loginId:req.params.loginId})

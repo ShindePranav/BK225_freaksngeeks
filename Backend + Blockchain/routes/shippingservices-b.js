@@ -70,14 +70,14 @@ router.post('/:loginId', async function(req,res) {
            
          let temp=new OwnShippingAuthority({
 
-            companyName:req.body.companyName,
-      containerID:req.body.containerID,
+            companyName:req.body.companyname,
+      containerID:req.body.containerId,
 itemId:req.body.itemId,
-orderRefNumber:req.body.orderRefNumber,
-contactPersonName:req.body.contactPersonName,
+orderRefNumber:req.body.OrderRefNumber,
+contactPersonName:req.body.contactpersonname,
 contactPersonMobNo:req.body.contactPersonMobNo,
-contactPersonEmailId:req.body.contactPersonEmailId,
-postalCode:req.body.postalCode
+contactPersonEmailId:req.body.contactpersonemailId,
+postalCode:req.body.postalcode
          })
  //setconditions(string memory _location,uint _quantity,address _receiverAddess,string memory _asset)
         const ship=await shipmentContract.methods.setconditions(temp.postalCode,temp.itemId,destination,"Steel Pipe")
@@ -90,7 +90,7 @@ postalCode:req.body.postalCode
              ${temp.contactPersonName} ${temp.postalCode}  `//${link}
             let mailoptions={
              from:mailer.fromMail,
-             to:bidder.correspondenceEmail,
+             to:req.body.contactpersonemailId,
              subject:"ownshpping authority confirmed",
              text:msg
              }

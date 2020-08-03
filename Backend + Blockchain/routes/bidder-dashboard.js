@@ -151,6 +151,7 @@ let temp=new TechnicalBid({
   const biddingId=uniqueid(7,data)
   temp.biddingId=biddingId
   const key=uniqueid(6,"1234567890")
+  temp.key=key;
 
 //console.log(tender['3'])
  // accept.acceptBid("b1","11","name","1111","2000","bidderId1","1234","500000")
@@ -178,7 +179,7 @@ router.get('/appliedBid/:loginId',async(req,res)=>{
 
 
         const bidder=await BidderRegistration.findOne({loginId:req.params.loginId})
-		const posts= await SubmitedBid.find().where('bidderId',bidder.bidderId);
+		const posts= await TechnicalBid.find().where('bidderId',bidder.bidderId);
 
 		res.json(posts);
 
